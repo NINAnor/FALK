@@ -142,6 +142,7 @@ RUN apt-get update && \
     python3-pydap \
     python3-rasterio \
     python3-requests \
+    python3-rpy2 \
     python3-scipy \
     python3-shapely \
     python3-sklearn \
@@ -190,6 +191,7 @@ RUN pip3 install \
     sentinelsat \
     threddsclient \
     pandas \
+    pygbif \
     gbif
 
 # unpack source code package and remove tarball archive:
