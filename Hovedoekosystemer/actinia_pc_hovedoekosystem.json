@@ -1,0 +1,549 @@
+{
+ "list": [
+      {
+             "id": "importer_bbox",
+             "module": "importer",
+             "inputs": [
+                 {
+                     "import_descr": {
+                         "source": "https://files.mundialis.de/download.php?id=287&token=U3YsKyZO7przGI9JvCynYXEkA2Xj1FHL&download",
+                         "type": "vector"
+                     },
+                     "param": "map",
+                     "value": "bbox"
+                 }
+             ]
+         },
+         {
+             "id": "importer_trainingdata",
+             "module": "importer",
+             "inputs": [
+                 {
+                     "import_descr": {
+                         "source": "https://files.mundialis.de/download.php?id=288&token=zw4aVTPT96iGFif0KDezqJKRBx0s3y4t&download",
+                         "type": "vector"
+                     },
+                     "param": "map",
+                     "value": "training_points"
+                 }
+             ]
+         },
+         {
+             "id": "Sentinel_2_download",
+             "module": "i.sentinel.download",
+             "inputs": [
+                 {
+                     "param": "settings",
+                     "value": "/src/plugins/esa_hub_login.txt"
+                 },
+                 {
+                     "param": "output",
+                     "value": "/mnt/geodata/miljoe/"
+                 },
+                 {
+                     "param": "map",
+                     "value": "bbox"
+                 },
+                 {
+                     "param": "start",
+                     "value": "2018-07-10"
+                 },
+                 {
+                     "param": "end",
+                     "value": "2018-07-11"
+                 },
+                 {
+                     "param": "query",
+                     "value": "identifier=S2A_MSIL2A_20180710T105031_N0208_R051_T32VNR_20180710T133007"
+                 }
+             ]
+         },
+         {
+            "id": "Sentinel_2_import",
+            "module": "i.sentinel.import",
+            "inputs": [
+                {
+                    "param": "input",
+                    "value": "/mnt/geodata/miljoe/"
+                },
+                {
+                    "param": "memory",
+                    "value": "1000"
+                }
+            ],
+            "flags": "r"
+        },
+        {
+            "id": "one_sentinel_2_bands_rename",
+            "module": "i.sentinel.rename",
+            "inputs": []
+        },
+        {
+            "id": "g_region_1",
+            "module": "g.region",
+            "inputs": [
+                {
+                    "param": "raster",
+                    "value": "B04"
+                }
+            ],
+            "flags": "g"
+        },
+        {
+            "id": "test_classcolumn",
+            "module": "v.db.select",
+            "inputs": [
+                {
+                    "param": "map",
+                    "value": "training_points"
+                },
+                {
+                    "param": "columns",
+                    "value": "hovedoekosystem"
+                }
+            ]
+        },
+        {
+            "id": "r_resamp_interp_B05",
+            "module": "r.resamp.interp",
+            "inputs": [
+                {
+                    "param": "input",
+                    "value": "B05"
+                },
+                {
+                    "param": "method",
+                    "value": "bilinear"
+                },
+                {
+                    "param": "output",
+                    "value": "B05_10m"
+                }
+            ]
+        },
+        {
+            "id": "r_resamp_interp_B06",
+            "module": "r.resamp.interp",
+            "inputs": [
+                {
+                    "param": "input",
+                    "value": "B06"
+                },
+                {
+                    "param": "method",
+                    "value": "bilinear"
+                },
+                {
+                    "param": "output",
+                    "value": "B06_10m"
+                }
+            ]
+        },
+        {
+            "id": "r_resamp_interp_B07",
+            "module": "r.resamp.interp",
+            "inputs": [
+                {
+                    "param": "input",
+                    "value": "B07"
+                },
+                {
+                    "param": "method",
+                    "value": "bilinear"
+                },
+                {
+                    "param": "output",
+                    "value": "B07_10m"
+                }
+            ]
+        },
+        {
+            "id": "r_resamp_interp_B8A",
+            "module": "r.resamp.interp",
+            "inputs": [
+                {
+                    "param": "input",
+                    "value": "B8A"
+                },
+                {
+                    "param": "method",
+                    "value": "bilinear"
+                },
+                {
+                    "param": "output",
+                    "value": "B8A_10m"
+                }
+            ]
+        },
+        {
+            "id": "r_resamp_interp_B11",
+            "module": "r.resamp.interp",
+            "inputs": [
+                {
+                    "param": "input",
+                    "value": "B11"
+                },
+                {
+                    "param": "method",
+                    "value": "bilinear"
+                },
+                {
+                    "param": "output",
+                    "value": "B11_10m"
+                }
+            ]
+        },
+        {
+            "id": "r_resamp_interp_B12",
+            "module": "r.resamp.interp",
+            "inputs": [
+                {
+                    "param": "input",
+                    "value": "B12"
+                },
+                {
+                    "param": "method",
+                    "value": "bilinear"
+                },
+                {
+                    "param": "output",
+                    "value": "B12_10m"
+                }
+            ]
+        },
+        {
+            "id": "r_resamp_interp_B01",
+            "module": "r.resamp.interp",
+            "inputs": [
+                {
+                    "param": "input",
+                    "value": "B01"
+                },
+                {
+                    "param": "method",
+                    "value": "bilinear"
+                },
+                {
+                    "param": "output",
+                    "value": "B01_10m"
+                }
+            ]
+        },
+        {
+            "id": "r_resamp_interp_B09",
+            "module": "r.resamp.interp",
+            "inputs": [
+                {
+                    "param": "input",
+                    "value": "B09"
+                },
+                {
+                    "param": "method",
+                    "value": "bilinear"
+                },
+                {
+                    "param": "output",
+                    "value": "B09_10m"
+                }
+            ]
+        },
+        {
+            "id": "indice_NDWI",
+            "module": "i.vi",
+            "inputs": [
+                {
+                    "param": "red",
+                    "value": "B08"
+                },
+                {
+                    "param": "nir",
+                    "value": "B03"
+                },
+                {
+                    "param": "viname",
+                    "value": "ndvi"
+                },
+                {
+                    "param": "output",
+                    "value": "ndwi"
+                }
+            ]
+        },
+        {
+            "id": "indice_NDVI",
+            "module": "i.vi",
+            "inputs": [
+                {
+                    "param": "red",
+                    "value": "B04"
+                },
+                {
+                    "param": "nir",
+                    "value": "B08"
+                },
+                {
+                    "param": "viname",
+                    "value": "ndvi"
+                },
+                {
+                    "param": "output",
+                    "value": "ndvi"
+                }
+            ]
+        },
+        {
+            "id": "indice_NDMI",
+            "module": "i.vi",
+            "inputs": [
+                {
+                    "param": "red",
+                    "value": "B11"
+                },
+                {
+                    "param": "nir",
+                    "value": "B08"
+                },
+                {
+                    "param": "viname",
+                    "value": "ndvi"
+                },
+                {
+                    "param": "output",
+                    "value": "ndmi"
+                }
+            ]
+        },
+        {
+            "id": "indice_texture",
+            "module": "r.texture",
+            "inputs": [
+                {
+                    "param": "input",
+                    "value": "B04"
+                },
+                {
+                    "param": "size",
+                    "value": "5"
+                },
+                {
+                    "param": "distance",
+                    "value": "2"
+                },
+                {
+                    "param": "method",
+                    "value": "asm,contrast,corr,var,idm,sa,sv,se,entr,dv,de,moc1,moc2"
+                },
+                {
+                    "param": "output",
+                    "value": "haralick_texture"
+                }
+            ]
+        },
+        {
+            "id": "group",
+            "module": "i.group",
+            "inputs": [
+                {
+                    "param": "group",
+                    "value": "classif_input"
+                },
+                {
+                    "param": "input",
+                    "value": "haralick_texture_ASM,haralick_texture_Contr,haralick_texture_Corr,haralick_texture_Var,haralick_texture_IDM,haralick_texture_SA,haralick_texture_SV,haralick_texture_SE,haralick_texture_Entr,haralick_texture_DV,haralick_texture_DE,haralick_texture_MOC-1,haralick_texture_MOC-2,B04,B08,B03,B02,ndvi,ndwi,ndmi"
+                }
+            ]
+        },
+        {
+            "id": "classification",
+            "module": "r.learn.ml",
+            "inputs": [
+                {
+                    "param": "group",
+                    "value": "classif_input"
+                },
+                {
+                    "param": "trainingpoints",
+                    "value": "training_points"
+                },
+                {
+                    "param": "field",
+                    "value": "hovedoekosystem"
+                },
+                {
+                    "param": "output",
+                    "value": "classification_map"
+                },
+                {
+                    "param": "classifier",
+                    "value": "RandomForestClassifier"
+                },
+                {
+                    "param": "save_model",
+                    "value": "/mnt/geodata/miljoe/model.gz"
+                }
+            ]
+        },
+        {
+            "id": "mask_FKB_AR5",
+            "module": "r.mapcalc",
+            "inputs": [
+                {
+                    "param": "expression",
+                    "value": "'classification_map_all_FKB_AR5=if(FKB_AR5_mask, 0, classification_map)'"
+                }
+            ]
+        },
+        {
+            "id": "exporter_1",
+            "module": "exporter",
+            "outputs": [
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "classification_map"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "classification_map_all_FKB_AR5"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "ndvi"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "ndwi"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "ndmi"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_Var"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_SV"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_SE"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_MOC-1"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_MOC-2"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_IDM"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_Entr"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_DV"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_DE"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_Corr"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_Contr"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "haralick_texture_ASM"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B01_10m"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B02"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B03"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B05_10m"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B04"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B06_10m"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B07_10m"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B08"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B09_10m"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B11_10m"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B12_10m"
+                },
+                {
+                    "export": {"type": "raster", "format": "GTiff"},
+                    "param": "map",
+                    "value": "B8A_10m"
+                }
+            ]
+        }
+    ],
+    "version": "1"
+}
