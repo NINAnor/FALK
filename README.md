@@ -1,14 +1,16 @@
-# FALK
-Repository for development, scripts, configuration files, specific for the FALK project. Where/when more appropriate, additional development for the project can be found in repositories for the software components used in FALK.
-
 # Deploying GeoNode in Sigma2 kubernetes
-This section describes the steps followed to deploy a GeoNode instance to sigma2 kubernetes starting from a solution used at NINA based on docker-compose.
+A FALK GeoNode instance has been deployed in sigma2 servers and available at https://geonode.falk.sigma2.no/.
+This section of the README describes the steps followed to deploy the GeoNode instance to sigma2 kubernetes starting from a docker-compose configuration used at NINA.
+
+## Customize GeoNode for the FALK project
+GeoNode was customized with changes in the Homepage, a suitable color palette and the Milødirektoratet logo.
+Gitlab CI automatically builds docker images and provides them through the NINA registry.gitlab.com registry. 
 
 ## Generate a docker-compose suitable for conversion
-
+Before converting the NINA docker-compose.yml to kubernetes pods: 
 #### `docker-compose-with-vars.yml`
 
-This file is generated populating `docker-compose.yml` with variables from `.env`:
+This file is generated populating `docker-compose.yml` with variables from `.env` by the command:
 
 ```bash
 cd scripts/spcgeonode
@@ -17,7 +19,7 @@ cd scripts/spcgeonode
 
 ## Convert to kubernetes pods
 
-This folder has been generated from `docker-compose-with-vars.yml`
+A folder containing kuberneted pods is generated from `docker-compose-with-vars.yml`, using the kompose tool:
 
 ```bash
 cd kubernetes
@@ -26,7 +28,7 @@ kompose convert -f ../docker-compose-with-vars.yml
 
 ## Install k3s
 
-[k3s](https://k3s.io/) is a lightweight distribution of Kubernetes.
+Before sharing the pods with sigma2 enginners, they were tested locally. [k3s](https://k3s.io/) is a lightweight distribution of Kubernetes.
 
 ```bash
 curl -sfL https://get.k3s.io | sh -
@@ -66,24 +68,6 @@ for f in {celery{,cam,beat},django,geoserver,nginx}-pod.yaml; do
 done
 ```
 
-## Support for private registry (from sigma2 server)
-Authentication for registry.gitlab.com in this case can be obtained creating a secret with a gitlab deploy token
-(after moving the kubernetes folder obtained with previous steps, including imagePullSecrets in pods):
-
-```bash
-kubectl create secret docker-registry --dry-run=true nina-gitlab-com \
---docker-server=registry.gitlab.com \
---docker-username=gitlab-falk-geonode \
---docker-password=<token obtained in gitlab.com> \
---docker-email=<some-email> -o yaml > nina-gitlab-com.yaml
-
-```
-
-The nina-gitlab-com.yaml secret file is copied to sigma2 storage server and secret deployed with:
-
-`kubectl apply — namespace=falk-ns9693k  –f nina-gitlab-com.yml`
-
-
 ## Storage
 
 Have a look at those files, especially at the storage size requested:
@@ -114,3 +98,27 @@ sudo watch k3s kubectl get pod
 ```bash
 sudo watch k3s kubectl describe pods
 ```
+
+## Moving the obtained pods to sigma2 servers
+A FALK project folder created in sigma2 nird servers was used to store configuration files and data.
+The folder containing the pods was moved via scp to the nird project folder, used as a bridge to interact with sigma2 engineers.
+
+## Support for private registry (from sigma2 server)
+Authentication for registry.gitlab.com in this case can be obtained creating a secret with a gitlab deploy token
+(after moving the kubernetes folder obtained with previous steps, including imagePullSecrets in pods):
+
+```bash
+kubectl create secret docker-registry --dry-run=true nina-gitlab-com \
+--docker-server=registry.gitlab.com \
+--docker-username=gitlab-falk-geonode \
+--docker-password=<token obtained in gitlab.com> \
+--docker-email=<some-email> -o yaml > nina-gitlab-com.yaml
+
+```
+
+The nina-gitlab-com.yaml secret file is copied to sigma2 storage server and secret deployed with:
+
+`kubectl apply —namespace=falk-[namespace] –f nina-gitlab-com.yml`
+
+## Adaptation and reconfiguration of the pods
+The pods had to be modified and adapted to the sigma2 kubernetes environment. The choice was to convert the separate pods to a single multi-container pod.  
