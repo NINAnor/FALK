@@ -1,3 +1,8 @@
+# FALK
+Repository for development, scripts, configuration files, specific for the FALK project. Where/when more appropriate, additional development for the project can be found in repositories for the software components used in FALK.
+
+************************
+
 # Deploying GeoNode in Sigma2 kubernetes
 A FALK GeoNode instance has been deployed in sigma2 servers and available at https://geonode.falk.sigma2.no/.
 This section of the README describes the steps followed to deploy the GeoNode instance to sigma2 kubernetes starting from a docker-compose configuration used at NINA.
