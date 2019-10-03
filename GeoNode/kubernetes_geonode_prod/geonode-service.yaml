@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: geonode
+  namespace: falk-ns9693k
+  labels:
+    app: geonode
+spec:
+  ports:
+  - name: web
+    port: 80
+    protocol: TCP
+    targetPort: web
+  selector:
+    name: geonode

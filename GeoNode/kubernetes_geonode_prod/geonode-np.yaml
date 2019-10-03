@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app: geonode
+  name: geonode
+  namespace: falk-ns9693k
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-ingress
+    ports:
+    - port: 80
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      name: geonode
+  policyTypes:
+  - Ingress

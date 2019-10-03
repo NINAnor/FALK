@@ -1,0 +1,577 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geonode
+  namespace: <nird-namespace>
+  labels:
+    app: geonode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: geonode
+      app: geonode
+  template:
+    metadata:
+      labels:
+        name: geonode
+        app: geonode
+    spec:
+      imagePullSecrets:
+        - name: nina-gitlab-com
+      volumes:
+        - name: database
+          persistentVolumeClaim:
+            claimName: <database_pvc>
+        - name: geodatadir
+          persistentVolumeClaim:
+            claimName: <geodatadir_pvc>
+        - name: static
+          persistentVolumeClaim:
+            claimName: <static_pvc>
+        - name: media
+          persistentVolumeClaim:
+            claimName: <media_pvc>
+        - name: rabbitmq
+          persistentVolumeClaim:
+            claimName: <rabbitmq_pvc>
+      containers:
+        - name: postgres
+          image: geonode/postgis:10
+          imagePullPolicy: Always
+          env:
+            - name: DATABASE_URL
+              value: postgres://db_username:db_pwd@postgres:5432/geonode
+            - name: GEODATABASE_URL
+              value: postgis://geodb_user:geodb_pwd@postgres:5432/geonode_data
+            - name: GEONODE_DATABASE
+              value: db_username
+            - name: GEONODE_DATABASE_PASSWORD
+              value: db_pwd
+            - name: GEONODE_GEODATABASE
+              value: geodb_user
+            - name: GEONODE_GEODATABASE_PASSWORD
+              value: geodb_pwd
+            - name: POSTGRES_PASSWORD
+              value: postgres
+          resources: 
+            requests:
+              cpu: 1024m
+              memory: 2048M
+            limits:
+              cpu: 1024m
+              memory: 2048M
+          volumeMounts:
+            - name: database
+              mountPath: /var/lib/postgresql/data/
+              mountPropagation: HostToContainer
+              readOnly: false 
+        - name: geoserver
+          image: registry.gitlab.com/nina-data/geonode/kubernetes_falk_custom/geoserver
+          imagePullPolicy: Always
+          env:
+            - name: ADMIN_PASSWORD
+              value: change_this_password
+            - name: ADMIN_USERNAME
+              value: change_this_username
+            - name: DATABASE_URL
+              value: postgres://db_username:db_pwd@postgres:5432/geonode
+            - name: GEODATABASE_URL
+              value: postgis://geodb_user:geodb_pwd@postgres:5432/geonode_data
+            - name: HTTP_HOST
+              value: geonode.falk.sigma2.no
+            - name: HTTP_PORT
+              value: '80'
+          livenessProbe:
+            exec:
+              command:
+                - 'curl --fail --silent --write-out ''HTTP CODE : %{http_code}
+  
+                  '' --output /dev/null http://127.0.0.1:8080/geoserver/rest/workspaces/geonode.html'
+            failureThreshold: 1
+            periodSeconds: 60
+            timeoutSeconds: 10
+          resources:
+             requests:
+               cpu: 1024m
+               memory: 2048M
+             limits:
+               cpu: 1024m
+               memory: 2048M
+          volumeMounts:
+            - name: geodatadir
+              mountPath: /spcgeonode-geodatadir/
+              mountPropagation: HostToContainer
+              readOnly: false 
+        - name: django
+          image: registry.gitlab.com/nina-data/geonode/kubernetes_falk_custom/django
+          imagePullPolicy: Always
+          command:
+            - /spcgeonode/scripts/spcgeonode/django/docker-entrypoint.sh
+          args:
+            - uwsgi
+            - --chdir=/spcgeonode
+            - --module=geonode.wsgi
+            - --socket=:8000
+            - --http=127.0.0.1:8001
+            - --processes=5
+            - --buffer-size=8192
+          env:
+            - name: ADMIN_EMAIL
+              value: admin@example.com
+            - name: ADMIN_PASSWORD
+              value: change_this_password
+            - name: ADMIN_USERNAME
+              value: change_this_username
+            - name: ALLOWED_HOSTS
+              value: '[''geonode.falk.sigma2.no'',''nginx'',''127.0.0.1'',''localhost'','''',''127.0.0.1'']'
+            - name: ASYNC_SIGNALS
+              value: 'True'
+            - name: BROKER_URL
+              value: amqp://rabbitmq:5672
+            - name: C_FORCE_ROOT
+              value: 'True'
+            - name: DATABASE_URL
+              value: postgres://db_username:db_pwd@postgres:5432/geonode
+            - name: DEBUG
+              value: 'False'
+            - name: DEFAULT_BACKEND_DATASTORE
+              value: datastore
+            - name: DEFAULT_BACKEND_UPLOADER
+              value: geonode.importer
+            - name: DJANGO_SETTINGS_MODULE
+              value: geonode.settings
+            - name: GEODATABASE_URL
+              value: postgis://geodb_user:geodb_pwd@postgres:5432/geonode_data
+            - name: GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY
+              value: geoext
+            - name: GEONODE_DATABASE
+              value: db_username
+            - name: GEONODE_DATABASE_PASSWORD
+              value: db_pwd
+            - name: GEONODE_GEODATABASE
+              value: geodb_user
+            - name: GEONODE_GEODATABASE_PASSWORD
+              value: geodb_pwd
+            - name: GEOSERVER_ADMIN_PASSWORD
+              value: change_this_password
+            - name: GEOSERVER_ADMIN_USER
+              value: change_this_username
+            - name: GEOSERVER_LOCATION
+              value: http://127.0.0.1/geoserver/
+            - name: HTTPS_HOST
+            - name: HTTPS_PORT
+              value: '443'
+            - name: HTTP_HOST
+              value: geonode.falk.sigma2.no
+            - name: HTTP_PORT
+              value: '80'
+            - name: MEDIA_ROOT
+              value: /spcgeonode-media/
+            - name: MEDIA_URL
+              value: /uploaded/
+            - name: MONITORING_ENABLED
+              value: 'False'
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: REGISTRATION_OPEN
+              value: 'True'
+            - name: SECRET_KEY
+              value: <YOURSECRETKEYCHANGEITASAPPLEASE123>
+            - name: SESSION_EXPIRED_CONTROL_ENABLED
+              value: 'False'
+            - name: STATIC_ROOT
+              value: /spcgeonode-static/
+            - name: STATIC_URL
+              value: /static/
+            - name: TIME_ZONE
+              value: UTC
+          livenessProbe:
+            exec:
+              command:
+              - 'curl --fail --silent --write-out ''HTTP CODE : %{http_code}
+
+                '' --output /dev/null http://127.0.0.1:8001/'
+            failureThreshold: 1
+            periodSeconds: 60
+            timeoutSeconds: 10
+          resources:
+             requests:
+               cpu: 1024m
+               memory: 2048M
+             limits:
+               cpu: 1024m
+               memory: 2048M
+          volumeMounts:
+            - name: static
+              mountPath: /spcgeonode-static/
+              mountPropagation: HostToContainer
+              readOnly: false 
+            - name: media
+              mountPath: /spcgeonode-media/
+              mountPropagation: HostToContainer
+              readOnly: false 
+        - name: celery
+          image: registry.gitlab.com/nina-data/geonode/kubernetes_falk_custom/django
+          imagePullPolicy: Always
+          args:
+            - celery
+            - worker
+            - --app=geonode.celery_app:app
+            - -l
+            - info
+            - -E
+          env:
+            - name: ADMIN_EMAIL
+              value: admin@example.com
+            - name: ADMIN_PASSWORD
+              value: change_this_password
+            - name: ADMIN_USERNAME
+              value: change_this_username
+            - name: ALLOWED_HOSTS
+              value: '[''geonode.falk.sigma2.no'',''nginx'',''127.0.0.1'',''localhost'','''',''127.0.0.1'']'
+            - name: ASYNC_SIGNALS
+              value: 'True'
+            - name: BROKER_URL
+              value: amqp://rabbitmq:5672
+            - name: C_FORCE_ROOT
+              value: 'True'
+            - name: DATABASE_URL
+              value: postgres://db_username:db_pwd@postgres:5432/geonode
+            - name: DEBUG
+              value: 'False'
+            - name: DEFAULT_BACKEND_DATASTORE
+              value: datastore
+            - name: DEFAULT_BACKEND_UPLOADER
+              value: geonode.importer
+            - name: DJANGO_SETTINGS_MODULE
+              value: geonode.settings
+            - name: GEODATABASE_URL
+              value: postgis://geodb_user:geodb_pwd@postgres:5432/geonode_data
+            - name: GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY
+              value: geoext
+            - name: GEONODE_DATABASE
+              value: db_username
+            - name: GEONODE_DATABASE_PASSWORD
+              value: db_pwd
+            - name: GEONODE_GEODATABASE
+              value: geodb_user
+            - name: GEONODE_GEODATABASE_PASSWORD
+              value: geodb_pwd
+            - name: GEOSERVER_ADMIN_PASSWORD
+              value: change_this_password
+            - name: GEOSERVER_ADMIN_USER
+              value: change_this_username
+            - name: GEOSERVER_LOCATION
+              value: http://127.0.0.1/geoserver/
+            - name: HTTPS_HOST
+            - name: HTTPS_PORT
+              value: '443'
+            - name: HTTP_HOST
+              value: geonode.falk.sigma2.no
+            - name: HTTP_PORT
+              value: '80'
+            - name: MEDIA_ROOT
+              value: /spcgeonode-media/
+            - name: MEDIA_URL
+              value: /uploaded/
+            - name: MONITORING_ENABLED
+              value: 'False'
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: REGISTRATION_OPEN
+              value: 'True'
+            - name: SECRET_KEY
+              value: <YOURSECRETKEYCHANGEITASAPPLEASE123>
+            - name: SESSION_EXPIRED_CONTROL_ENABLED
+              value: 'False'
+            - name: STATIC_ROOT
+              value: /spcgeonode-static/
+            - name: STATIC_URL
+              value: /static/
+            - name: TIME_ZONE
+              value: UTC
+        livenessProbe:
+        exec:
+        command:
+        - 'curl --fail --silent --write-out ''HTTP CODE : %{http_code}
+
+          '' --output /dev/null http://127.0.0.1:8001/'
+      failureThreshold: 1
+      periodSeconds: 60
+      timeoutSeconds: 10
+          resources:
+             requests:
+               cpu: 1024m
+               memory: 4096M
+             limits:
+               cpu: 2048m
+               memory: 8192M
+          volumeMounts:
+            - mountPath: /spcgeonode-static/
+              name: static
+              mountPropagation: HostToContainer
+              readOnly: false 
+            - mountPath: /spcgeonode-media/
+              name: media
+              mountPropagation: HostToContainer
+              readOnly: false 
+        - name: celerybeat
+          image: registry.gitlab.com/nina-data/geonode/kubernetes_falk_custom/django
+          imagePullPolicy: Always
+          args:
+            - celery
+            - beat
+            - --app=geonode.celery_app:app
+            - --pidfile=/celerybeat.pid
+            - -l
+            - info
+          env:
+           - name: ADMIN_EMAIL
+             value: admin@example.com
+           - name: ADMIN_PASSWORD
+             value: change_this_password
+           - name: ADMIN_USERNAME
+             value: change_this_username
+           - name: ALLOWED_HOSTS
+             value: '[''geonode.falk.sigma2.no'',''nginx'',''127.0.0.1'',''localhost'','''',''127.0.0.1'']'
+           - name: ASYNC_SIGNALS
+             value: 'True'
+           - name: BROKER_URL
+             value: amqp://rabbitmq:5672
+           - name: C_FORCE_ROOT
+             value: 'True'
+           - name: DATABASE_URL
+             value: postgres://db_username:db_pwd@postgres:5432/geonode
+           - name: DEBUG
+             value: 'False'
+           - name: DEFAULT_BACKEND_DATASTORE
+             value: datastore
+           - name: DEFAULT_BACKEND_UPLOADER
+             value: geonode.importer
+           - name: DJANGO_SETTINGS_MODULE
+             value: geonode.settings
+           - name: GEODATABASE_URL
+             value: postgis://geodb_user:geodb_pwd@postgres:5432/geonode_data
+           - name: GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY
+             value: geoext
+           - name: GEONODE_DATABASE
+             value: db_username
+           - name: GEONODE_DATABASE_PASSWORD
+             value: db_pwd
+           - name: GEONODE_GEODATABASE
+             value: geodb_user
+           - name: GEONODE_GEODATABASE_PASSWORD
+             value: geodb_pwd
+           - name: GEOSERVER_ADMIN_PASSWORD
+             value: change_this_password
+           - name: GEOSERVER_ADMIN_USER
+             value: change_this_username
+           - name: GEOSERVER_LOCATION
+             value: http://127.0.0.1/geoserver/
+           - name: HTTPS_HOST
+           - name: HTTPS_PORT
+             value: '443'
+           - name: HTTP_HOST
+             value: geonode.falk.sigma2.no
+           - name: HTTP_PORT
+             value: '80'
+           - name: MEDIA_ROOT
+             value: /spcgeonode-media/
+           - name: MEDIA_URL
+             value: /uploaded/
+           - name: MONITORING_ENABLED
+             value: 'False'
+           - name: POSTGRES_PASSWORD
+             value: postgres
+           - name: REGISTRATION_OPEN
+             value: 'True'
+           - name: SECRET_KEY
+             value: <YOURSECRETKEYCHANGEITASAPPLEASE123>
+           - name: SESSION_EXPIRED_CONTROL_ENABLED
+             value: 'False'
+           - name: STATIC_ROOT
+             value: /spcgeonode-static/
+           - name: STATIC_URL
+             value: /static/
+           - name: TIME_ZONE
+             value: UTC
+    livenessProbe:
+      exec:
+        command:
+        - 'curl --fail --silent --write-out ''HTTP CODE : %{http_code}
+
+          '' --output /dev/null http://127.0.0.1:8001/'
+      failureThreshold: 1
+      periodSeconds: 60
+      timeoutSeconds: 10
+          resources:
+             requests:
+               cpu: 1024m
+               memory: 2048M
+             limits:
+               cpu: 1024m
+               memory: 2048M
+          volumeMounts:
+            - mountPath: /spcgeonode-static/
+              name: static
+              mountPropagation: HostToContainer
+              readOnly: false 
+            - mountPath: /spcgeonode-media/
+              name: media
+              mountPropagation: HostToContainer
+              readOnly: false 
+        - name: celerycam
+          image: registry.gitlab.com/nina-data/geonode/kubernetes_falk_custom/django
+          imagePullPolicy: Always
+          args:
+            - celery
+            - events
+            - --app=geonode.celery_app:app
+            - --pidfile=/celeryev.pid
+            - --camera=django_celery_monitor.camera.Camera
+            - --frequency=2.0
+            - -l
+            - info
+          env:
+            - name: ADMIN_EMAIL
+              value: admin@example.com
+            - name: ADMIN_PASSWORD
+              value: change_this_password
+            - name: ADMIN_USERNAME
+              value: change_this_username
+            - name: ALLOWED_HOSTS
+              value: '[''geonode.falk.sigma2.no'',''nginx'',''127.0.0.1'',''localhost'','''',''127.0.0.1'']'
+            - name: ASYNC_SIGNALS
+              value: 'True'
+            - name: BROKER_URL
+              value: amqp://rabbitmq:5672
+            - name: C_FORCE_ROOT
+              value: 'True'
+            - name: DATABASE_URL
+              value: postgres://db_username:db_pwd@postgres:5432/geonode
+            - name: DEBUG
+              value: 'False'
+            - name: DEFAULT_BACKEND_DATASTORE
+              value: datastore
+            - name: DEFAULT_BACKEND_UPLOADER
+              value: geonode.importer
+            - name: DJANGO_SETTINGS_MODULE
+              value: geonode.settings
+            - name: GEODATABASE_URL
+              value: postgis://geodb_user:geodb_pwd@postgres:5432/geonode_data
+            - name: GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY
+              value: geoext
+            - name: GEONODE_DATABASE
+              value: db_username
+            - name: GEONODE_DATABASE_PASSWORD
+              value: db_pwd
+            - name: GEONODE_GEODATABASE
+              value: geodb_user
+            - name: GEONODE_GEODATABASE_PASSWORD
+              value: geodb_pwd
+            - name: GEOSERVER_ADMIN_PASSWORD
+              value: change_this_password
+            - name: GEOSERVER_ADMIN_USER
+              value: change_this_username
+            - name: GEOSERVER_LOCATION
+              value: http://127.0.0.1/geoserver/
+            - name: HTTPS_HOST
+            - name: HTTPS_PORT
+              value: '443'
+            - name: HTTP_HOST
+              value: geonode.falk.sigma2.no        
+            - name: HTTP_PORT
+              value: '80'
+            - name: MEDIA_ROOT
+              value: /spcgeonode-media/
+            - name: MEDIA_URL
+              value: /uploaded/
+            - name: MONITORING_ENABLED
+              value: 'False'
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: REGISTRATION_OPEN
+              value: 'True'
+            - name: SECRET_KEY
+              value: <YOURSECRETKEYCHANGEITASAPPLEASE123>
+            - name: SESSION_EXPIRED_CONTROL_ENABLED
+              value: 'False'
+            - name: STATIC_ROOT
+              value: /spcgeonode-static/
+            - name: STATIC_URL
+              value: /static/
+            - name: TIME_ZONE
+              value: UTC
+    livenessProbe:
+      exec:
+        command:
+        - 'curl --fail --silent --write-out ''HTTP CODE : %{http_code}
+
+          '' --output /dev/null http://127.0.0.1:8001/'
+      failureThreshold: 1
+      periodSeconds: 60
+      timeoutSeconds: 10
+          resources:
+             requests:
+               cpu: 1024m
+               memory: 2048M
+             limits:
+               cpu: 1024m
+               memory: 2048M
+          volumeMounts:
+            - mountPath: /spcgeonode-static/
+              name: static
+              mountPropagation: HostToContainer
+              readOnly: false 
+            - mountPath: /spcgeonode-media/
+              name: media
+              mountPropagation: HostToContainer
+              readOnly: false 
+        - name: rabbitmq
+          image: rabbitmq:3.7-alpine
+          imagePullPolicy: Always
+          resources:
+             requests:
+               cpu: 1024m
+               memory: 2048M
+             limits:
+               cpu: 1024m
+               memory: 2048M
+          volumeMounts:
+            - mountPath: /var/lib/rabbitmq
+              name: rabbitmq
+              mountPropagation: HostToContainer
+              readOnly: false 
+        - name: nginx
+          image: registry.gitlab.com/nina-data/geonode/kubernetes_falk_custom/nginx
+          imagePullPolicy: Always
+          env:
+            - name: HTTPS_HOST
+            - name: HTTP_HOST
+              value: geonode.falk.sigma2.no
+            - name: LETSENCRYPT_MODE
+              value: disabled
+            - name: RESOLVER
+              value: kube-dns.kube-system.svc.cluster.local
+          ports: 
+          - name: web  
+            containerPort: 80
+          - name: webs  
+            containerPort: 443
+          resources:
+             requests:
+               cpu: 1024m
+               memory: 2048M
+             limits:
+               cpu: 1024m
+               memory: 2048M
+          volumeMounts:
+            - mountPath: /spcgeonode-static/
+              name: static
+              mountPropagation: HostToContainer
+              readOnly: false 
+            - mountPath: /spcgeonode-media/
+              name: media
+              mountPropagation: HostToContainer
+              readOnly: false 
