@@ -79,6 +79,7 @@ RUN apt-get update && \
     libfftw3-dev \
     libfreetype6-dev \
     libgdal-dev \
+    libgdal-grass \
     libgeos-dev \
     libgnutls28-dev \
     libglu1-mesa-dev \
@@ -196,16 +197,15 @@ RUN pip3 install \
     pygbif \
     mock \
     "xdg<=1.0.7" \
-    requests \
+    "requests>=2.20" \
     idna \
     certifi \
     chardet \
     urllib3 \
     "PyYAML>=5.1"
-RUN pip3 install --no-cache-dir \
-    pythesint
-RUN pip3 install --no-cache-dir \
-    nansat
+RUN pip3 install --upgrade pip
+RUN pip3 install pythesint
+RUN pip3 install nansat
 
 # unpack source code package and remove tarball archive:
 RUN mkdir /opt/src
