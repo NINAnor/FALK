@@ -10,4 +10,4 @@ Reading the actual data,
 Checking what kind of data, we have, 
 Make a figure and plot from the data to know from where it was taken.
 
-[Prepare a nice figure with nansat](): in this notebook figure will be prepared to be used in presentation or papers following these steps: get location of the data to be used (nansat test data). Import all tools for the NANSAT package. read the satellite data with nansat. Define the grid of the region of interest, then reproject and resample the data according to that. Write the bands of interest to a figure e.g png. Display png in Ipython.       
+[Prepare a nice figure with nansat](https://github.com/NINAnor/FALK/blob/master/Nansat_Geo-SPAAS/Nansat%20Use%20Case%2001.ipynb): in this notebook figure will be prepared to be used in presentation or papers following these steps: get location of the data to be used (nansat test data). Import all tools for the NANSAT package. read the satellite data with nansat. Define the grid of the region of interest, then reproject and resample the data according to that. Write the bands of interest to a figure e.g png. Display png in Ipython.       
