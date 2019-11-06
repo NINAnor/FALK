@@ -32,7 +32,7 @@
          "inputs": [
              {
                  "param": "input",
-                 "value": "/mnt/falk-ns9693k/data/NBS/Sentinel-2/test/",
+                 "value": "/mnt/falk-ns9693k/data/NBS/Sentinel-2/test/"
              },
              {
                  "param": "memory",
