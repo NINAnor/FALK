@@ -39,12 +39,16 @@ RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-
 # Install the dependencies of GRASS GIS (we'll locally compile PROJ 4.9)
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install software-properties-common -y && \
+    apt-get install software-properties-common apt-utils python3-pip -y && \
     add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-    RUN apt-get update && \
+RUN pip3 install "requests>=2.20" \
+    urllib3 \
+    igraph
+
+RUN apt-get update && \
     apt-get install --no-install-recommends --no-install-suggests -y \
     attr \
     bc \
@@ -123,7 +127,6 @@ RUN apt-get update && \
     python3-gdal \
     python3-geopandas \
     python3-httplib2 \
-    python3-igraph \
     python3-jinja2 \
     python3-libxml2 \
     python3-mysqldb \
@@ -133,7 +136,6 @@ RUN apt-get update && \
     python3-pep8 \
     python3-pillow \
     python3-pil \
-    python3-pip \
     python3-matplotlib \
     python3-netcdf4 \
     python3-numpy \
@@ -143,7 +145,6 @@ RUN apt-get update && \
     python3-pandas \
     python3-pydap \
     python3-rasterio \
-    python3-requests \
     python3-rpy2 \
     python3-scipy \
     python3-shapely \
@@ -154,7 +155,6 @@ RUN apt-get update && \
     python3-sqlalchemy \
     python3-tk \
     python3-unittest2 \
-    python3-urllib3 \
     python3-xlsxwriter \
     python3-xlrd \
     postgresql \
@@ -186,13 +186,14 @@ RUN pip3 install \
     pysal \
     scikit-learn \
     scikit-image \
-    grass-session \
     pymodis \
     pystan \
     pymc3 \
-    sentinelsat \
     threddsclient \
     pandas \
+    plotly \
+    plotly-charts \
+    plotly-geo \
     gbif  \
     pygbif \
     mock \
@@ -201,14 +202,30 @@ RUN pip3 install \
     idna \
     certifi \
     chardet \
-    urllib3 \
     "PyYAML>=5.1"
-RUN pip3 install --upgrade pip
-RUN pip3 install pythesint
-RUN pip3 install nansat
 
 # unpack source code package and remove tarball archive:
-RUN mkdir /opt/src
+RUN pip3 install git+https://github.com/ninsbl/grass-session.git@grass_versions \
+    git+https://github.com/sentinelsat/sentinelsat.git
+
+RUN pip3 install https://github.com/nansencenter/py-thesaurus-interface/archive/master.tar.gz
+RUN pip3 install nansat
+
+# Install Django
+RUN pip3 install \
+    coverage \
+    django \
+    django-forms-bootstrap \
+    django-leaflet \
+    thredds_crawler \
+&&  echo "alias ll='ls -lh'" >> /root/.bashrc
+
+# install Geo-SPaaS
+WORKDIR /opt/src
+RUN git clone https://github.com/nansencenter/django-geo-spaas
+WORKDIR /opt/src/django-geo-spaas
+RUN /usr/bin/python3 setup.py install
+
 WORKDIR /opt/src
 RUN git clone https://github.com/OSGeo/grass.git grass_build
 WORKDIR /opt/src/grass_build
@@ -221,11 +238,6 @@ ENV LD_LIBRARY_PATH "/usr/local/lib"
 ENV LDFLAGS "$MYLDFLAGS"
 ENV CFLAGS "$MYCFLAGS"
 ENV CXXFLAGS "$MYCXXFLAGS"
-
-# Fixup python shebangs - TODO: will be resolved in future by grass-core
-# WORKDIR /opt/src/grass_build
-# RUN find -name '*.py' | xargs sed -i 's,#!/usr/bin/env python,#!/usr/bin/env python3,'
-# RUN sed -i 's,python,python3,' include/Make/Platform.make.in
 
 # Configure compile and install GRASS GIS
 ENV GRASS_PYTHON=/usr/bin/python3
@@ -265,7 +277,15 @@ RUN make install && ldconfig
 # enable simple grass command regardless of version number
 RUN ln -s `find /usr/local/bin -name "grass*"` /usr/local/bin/grass
 
-WORKDIR $HOME
+WORKDIR /opt/src
+RUN git clone https://github.com/OSGeo/grass-addons.git
+WORKDIR /opt/src/grass-addons/grass7/
+# Fixup python shebangs - TODO: will be resolved in future by grass-core
+RUN find -name '*.py' | xargs sed -i 's,#!/usr/bin/env python,#!/usr/bin/env python3,'
+
+RUN make MODULE_TOPDIR=/usr/local/grass79/
+
+WORKDIR /home/notebook
 
 # Unset environmental variables to avoid later compilation issues
 ENV INTEL ""
@@ -290,5 +310,8 @@ RUN rm -rf /opt/src/*
 # Reduce the image size
 RUN apt-get autoremove -y
 RUN apt-get clean -y
+
+RUN pip3 install --upgrade jupyter_client==5.3.4
+RUN chown -R notebook:notebook /home/notebook && chmod -R g+w /home/notebook
 
 USER notebook
