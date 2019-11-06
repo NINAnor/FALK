@@ -9,3 +9,5 @@ Read information about the data (METADATA) that include the number of bands etc.
 Reading the actual data,
 Checking what kind of data, we have, 
 Make a figure and plot from the data to know from where it was taken.
+
+[Prepare a nice figure with nansat](): in this notebook figure will be prepared to be used in presentation or papers following these steps: get location of the data to be used (nansat test data). Import all tools for the NANSAT package. read the satellite data with nansat. Define the grid of the region of interest, then reproject and resample the data according to that. Write the bands of interest to a figure e.g png. Display png in Ipython.       
