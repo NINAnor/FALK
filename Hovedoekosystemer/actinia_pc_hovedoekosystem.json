@@ -1,95 +1,58 @@
 {
  "list": [
       {
-             "id": "importer_bbox",
-             "module": "importer",
-             "inputs": [
-                 {
-                     "import_descr": {
-                         "source": "https://files.mundialis.de/download.php?id=287&token=U3YsKyZO7przGI9JvCynYXEkA2Xj1FHL&download",
-                         "type": "vector"
-                     },
-                     "param": "map",
-                     "value": "bbox"
-                 }
-             ]
-         },
-         {
-             "id": "importer_trainingdata",
-             "module": "importer",
-             "inputs": [
-                 {
-                     "import_descr": {
-                         "source": "https://files.mundialis.de/download.php?id=288&token=zw4aVTPT96iGFif0KDezqJKRBx0s3y4t&download",
-                         "type": "vector"
-                     },
-                     "param": "map",
-                     "value": "training_points"
-                 }
-             ]
-         },
-         {
-             "id": "Sentinel_2_download",
-             "module": "i.sentinel.download",
-             "inputs": [
-                 {
-                     "param": "settings",
-                     "value": "/src/plugins/esa_hub_login.txt"
-                 },
-                 {
-                     "param": "output",
-                     "value": "/mnt/geodata/miljoe/"
-                 },
-                 {
-                     "param": "map",
-                     "value": "bbox"
-                 },
-                 {
-                     "param": "start",
-                     "value": "2018-07-10"
-                 },
-                 {
-                     "param": "end",
-                     "value": "2018-07-11"
-                 },
-                 {
-                     "param": "query",
-                     "value": "identifier=S2A_MSIL2A_20180710T105031_N0208_R051_T32VNR_20180710T133007"
-                 }
-             ]
-         },
-         {
-            "id": "Sentinel_2_import",
-            "module": "i.sentinel.import",
-            "inputs": [
-                {
-                    "param": "input",
-                    "value": "/mnt/geodata/miljoe/"
-                },
-                {
-                    "param": "memory",
-                    "value": "1000"
-                }
-            ],
-            "flags": "r"
-        },
-        {
-            "id": "one_sentinel_2_bands_rename",
-            "module": "i.sentinel.rename",
-            "inputs": []
-        },
-        {
-            "id": "g_region_1",
-            "module": "g.region",
-            "inputs": [
-                {
-                    "param": "raster",
-                    "value": "B04"
-                }
-            ],
-            "flags": "g"
-        },
-        {
+       "module": "v.import",
+       "id": "import_bbox",
+       "inputs":[
+          {"param": "input", "value": "/actinia_core/nird/data/projects/FALK/Hovedoekosystemer_FALK/boundingboxes.gpkg"},
+          {"param": "layer", "value": "boundingboxes"},
+          {"param": "extent", "value": "input"},
+          {"param": "snap", "value": "-1"}
+       ],
+       "outputs":[
+          {"param": "output", "value": "bbox"}
+        ]
+      },
+      {
+        "module": "v.import",
+        "id": "importer_trainingdata",
+        "inputs":[
+           {"param": "input", "value": "/actinia_core/nird/data/projects/FALK/Hovedoekosystemer_FALK/training_random_hovedoekosystem.gpkg"},
+           {"param": "layer", "value": "training_random_hovedoekosystem"},
+           {"param": "extent", "value": "input"},
+           {"param": "snap", "value": "-1"}
+         ],
+        "outputs":[
+           {"param": "output", "value": "training_points"}
+         ]
+      },
+      {
+         "id": "Sentinel_2_import",
+         "module": "i.sentinel.import",
+         "inputs": [
+             {
+                 "param": "input",
+                 "value": "/actinia_core/nird/data/NBS/Sentinel-2/test/"
+             },
+             {
+                 "param": "memory",
+                 "value": "1000"
+             }
+         ],
+         "flags": "l"
+      },
+      {
+          "id": "g_region_1",
+          "module": "g.region",
+          "inputs": [
+              {
+                  "param": "raster",
+                  "value": "T32VMR_20180710T105031_B04_10m"
+              }
+          ],
+          "flags": "g"
+      },
+      {
             "id": "test_classcolumn",
             "module": "v.db.select",
             "inputs": [
@@ -109,7 +72,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "B05"
+                    "value": "T32VMR_20180710T105031_B05_20m"
                 },
                 {
                     "param": "method",
@@ -117,7 +80,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "B05_10m"
+                    "value": "T32VMR_20180710T105031_B05_10m"
                 }
             ]
         },
@@ -127,7 +90,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "B06"
+                    "value": "T32VMR_20180710T105031_B06_20m"
                 },
                 {
                     "param": "method",
@@ -135,7 +98,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "B06_10m"
+                    "value": "T32VMR_20180710T105031_B06_10m"
                 }
             ]
         },
@@ -145,7 +108,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "B07"
+                    "value": "T32VMR_20180710T105031_B07_20m"
                 },
                 {
                     "param": "method",
@@ -153,7 +116,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "B07_10m"
+                    "value": "T32VMR_20180710T105031_B07_10m"
                 }
             ]
         },
@@ -163,7 +126,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "B8A"
+                    "value": "T32VMR_20180710T105031_B8A_20m"
                 },
                 {
                     "param": "method",
@@ -171,7 +134,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "B8A_10m"
+                    "value": "T32VMR_20180710T105031_B8A_10m"
                 }
             ]
         },
@@ -181,7 +144,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "B11"
+                    "value": "T32VMR_20180710T105031_B11_20m"
                 },
                 {
                     "param": "method",
@@ -189,7 +152,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "B11_10m"
+                    "value": "T32VMR_20180710T105031_B11_10m"
                 }
             ]
         },
@@ -199,7 +162,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "B12"
+                    "value": "T32VMR_20180710T105031_B12_20m"
                 },
                 {
                     "param": "method",
@@ -207,7 +170,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "B12_10m"
+                    "value": "T32VMR_20180710T105031_B12_10m"
                 }
             ]
         },
@@ -217,7 +180,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "B01"
+                    "value": "T32VMR_20180710T105031_B01_60m"
                 },
                 {
                     "param": "method",
@@ -225,7 +188,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "B01_10m"
+                    "value": "T32VMR_20180710T105031_B01_10m"
                 }
             ]
         },
@@ -235,7 +198,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "B09"
+                    "value": "T32VMR_20180710T105031_B09_60m"
                 },
                 {
                     "param": "method",
@@ -243,7 +206,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "B09_10m"
+                    "value": "T32VMR_20180710T105031_B09_10m"
                 }
             ]
         },
@@ -253,11 +216,11 @@
             "inputs": [
                 {
                     "param": "red",
-                    "value": "B08"
+                    "value": "T32VMR_20180710T105031_B08_10m"
                 },
                 {
                     "param": "nir",
-                    "value": "B03"
+                    "value": "T32VMR_20180710T105031_B03_10m"
                 },
                 {
                     "param": "viname",
@@ -275,11 +238,11 @@
             "inputs": [
                 {
                     "param": "red",
-                    "value": "B04"
+                    "value": "T32VMR_20180710T105031_B04_10m"
                 },
                 {
                     "param": "nir",
-                    "value": "B08"
+                    "value": "T32VMR_20180710T105031_B08_10m"
                 },
                 {
                     "param": "viname",
@@ -297,11 +260,11 @@
             "inputs": [
                 {
                     "param": "red",
-                    "value": "B11"
+                    "value": "T32VMR_20180710T105031_B11_10m"
                 },
                 {
                     "param": "nir",
-                    "value": "B08"
+                    "value": "T32VMR_20180710T105031_B08_10m"
                 },
                 {
                     "param": "viname",
@@ -319,7 +282,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "B04"
+                    "value": "T32VMR_20180710T105031_B04_10m"
                 },
                 {
                     "param": "size",
@@ -349,7 +312,7 @@
                 },
                 {
                     "param": "input",
-                    "value": "haralick_texture_ASM,haralick_texture_Contr,haralick_texture_Corr,haralick_texture_Var,haralick_texture_IDM,haralick_texture_SA,haralick_texture_SV,haralick_texture_SE,haralick_texture_Entr,haralick_texture_DV,haralick_texture_DE,haralick_texture_MOC-1,haralick_texture_MOC-2,B04,B08,B03,B02,ndvi,ndwi,ndmi"
+                    "value": "haralick_texture_ASM,haralick_texture_Contr,haralick_texture_Corr,haralick_texture_Var,haralick_texture_IDM,haralick_texture_SA,haralick_texture_SV,haralick_texture_SE,haralick_texture_Entr,haralick_texture_DV,haralick_texture_DE,haralick_texture_MOC-1,haralick_texture_MOC-2,T32VMR_20180710T105031_B04_10m,T32VMR_20180710T105031_B08_10m,T32VMR_20180710T105031_B03_10m,T32VMR_20180710T105031_B02_10m,ndvi,ndwi,ndmi"
                 }
             ]
         },
@@ -379,7 +342,19 @@
                 },
                 {
                     "param": "save_model",
-                    "value": "/mnt/geodata/miljoe/model.gz"
+                    "value": "/actinia_core/nird/data/projects/FALK/Hovedoekosystemer_FALK/model.gz"
+                },
+                {
+                    "param": "errors_file",
+                    "value": "/actinia_core/nird/data/projects/FALK/Hovedoekosystemer_FALK/errors.csv"
+                },
+                {
+                    "param": "preds_file",
+                    "value": "/actinia_core/nird/data/projects/FALK/Hovedoekosystemer_FALK/predictions.csv"
+                },
+                {
+                    "param": "fimp_file",
+                    "value": "/actinia_core/nird/data/projects/FALK/Hovedoekosystemer_FALK/feature_importance.csv"
                 }
             ]
         },
@@ -485,62 +460,62 @@
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B01_10m"
+                    "value": "T32VMR_20180710T105031_B01_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B02"
+                    "value": "T32VMR_20180710T105031_B02_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B03"
+                    "value": "T32VMR_20180710T105031_B03_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B05_10m"
+                    "value": "T32VMR_20180710T105031_B05_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B04"
+                    "value": "T32VMR_20180710T105031_B04_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B06_10m"
+                    "value": "T32VMR_20180710T105031_B06_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B07_10m"
+                    "value": "T32VMR_20180710T105031_B07_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B08"
+                    "value": "T32VMR_20180710T105031_B08_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B09_10m"
+                    "value": "T32VMR_20180710T105031_B09_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B11_10m"
+                    "value": "T32VMR_20180710T105031_B11_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B12_10m"
+                    "value": "T32VMR_20180710T105031_B12_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "B8A_10m"
+                    "value": "T32VMR_20180710T105031_B8A_10m"
                 }
             ]
         }
