@@ -32,7 +32,7 @@
          "inputs": [
              {
                  "param": "input",
-                 "value": "/actinia_core/nird/data/NBS/Sentinel-2/test/"
+                 "value": "/actinia_core/nird/data/NBS/Sentinel-2/test2/"
              },
              {
                  "param": "memory",
@@ -47,7 +47,7 @@
           "inputs": [
               {
                   "param": "raster",
-                  "value": "T32VMR_20180710T105031_B04_10m"
+                  "value": "T32VNR_20180630T105031_B04_10m"
               }
           ],
           "flags": "g"
@@ -72,7 +72,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "T32VMR_20180710T105031_B05_20m"
+                    "value": "T32VNR_20180630T105031_B05_20m"
                 },
                 {
                     "param": "method",
@@ -80,7 +80,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "T32VMR_20180710T105031_B05_10m"
+                    "value": "T32VNR_20180630T105031_B05_10m"
                 }
             ]
         },
@@ -90,7 +90,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "T32VMR_20180710T105031_B06_20m"
+                    "value": "T32VNR_20180630T105031_B06_20m"
                 },
                 {
                     "param": "method",
@@ -98,7 +98,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "T32VMR_20180710T105031_B06_10m"
+                    "value": "T32VNR_20180630T105031_B06_10m"
                 }
             ]
         },
@@ -108,7 +108,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "T32VMR_20180710T105031_B07_20m"
+                    "value": "T32VNR_20180630T105031_B07_20m"
                 },
                 {
                     "param": "method",
@@ -116,7 +116,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "T32VMR_20180710T105031_B07_10m"
+                    "value": "T32VNR_20180630T105031_B07_10m"
                 }
             ]
         },
@@ -126,7 +126,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "T32VMR_20180710T105031_B8A_20m"
+                    "value": "T32VNR_20180630T105031_B8A_20m"
                 },
                 {
                     "param": "method",
@@ -134,7 +134,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "T32VMR_20180710T105031_B8A_10m"
+                    "value": "T32VNR_20180630T105031_B8A_10m"
                 }
             ]
         },
@@ -144,7 +144,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "T32VMR_20180710T105031_B11_20m"
+                    "value": "T32VNR_20180630T105031_B11_20m"
                 },
                 {
                     "param": "method",
@@ -152,7 +152,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "T32VMR_20180710T105031_B11_10m"
+                    "value": "T32VNR_20180630T105031_B11_10m"
                 }
             ]
         },
@@ -162,7 +162,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "T32VMR_20180710T105031_B12_20m"
+                    "value": "T32VNR_20180630T105031_B12_20m"
                 },
                 {
                     "param": "method",
@@ -170,7 +170,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "T32VMR_20180710T105031_B12_10m"
+                    "value": "T32VNR_20180630T105031_B12_10m"
                 }
             ]
         },
@@ -180,7 +180,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "T32VMR_20180710T105031_B01_60m"
+                    "value": "T32VNR_20180630T105031_B01_60m"
                 },
                 {
                     "param": "method",
@@ -188,7 +188,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "T32VMR_20180710T105031_B01_10m"
+                    "value": "T32VNR_20180630T105031_B01_10m"
                 }
             ]
         },
@@ -198,7 +198,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "T32VMR_20180710T105031_B09_60m"
+                    "value": "T32VNR_20180630T105031_B09_60m"
                 },
                 {
                     "param": "method",
@@ -206,7 +206,7 @@
                 },
                 {
                     "param": "output",
-                    "value": "T32VMR_20180710T105031_B09_10m"
+                    "value": "T32VNR_20180630T105031_B09_10m"
                 }
             ]
         },
@@ -216,11 +216,11 @@
             "inputs": [
                 {
                     "param": "red",
-                    "value": "T32VMR_20180710T105031_B08_10m"
+                    "value": "T32VNR_20180630T105031_B08_10m"
                 },
                 {
                     "param": "nir",
-                    "value": "T32VMR_20180710T105031_B03_10m"
+                    "value": "T32VNR_20180630T105031_B03_10m"
                 },
                 {
                     "param": "viname",
@@ -238,11 +238,11 @@
             "inputs": [
                 {
                     "param": "red",
-                    "value": "T32VMR_20180710T105031_B04_10m"
+                    "value": "T32VNR_20180630T105031_B04_10m"
                 },
                 {
                     "param": "nir",
-                    "value": "T32VMR_20180710T105031_B08_10m"
+                    "value": "T32VNR_20180630T105031_B08_10m"
                 },
                 {
                     "param": "viname",
@@ -260,11 +260,11 @@
             "inputs": [
                 {
                     "param": "red",
-                    "value": "T32VMR_20180710T105031_B11_10m"
+                    "value": "T32VNR_20180630T105031_B11_10m"
                 },
                 {
                     "param": "nir",
-                    "value": "T32VMR_20180710T105031_B08_10m"
+                    "value": "T32VNR_20180630T105031_B08_10m"
                 },
                 {
                     "param": "viname",
@@ -282,7 +282,7 @@
             "inputs": [
                 {
                     "param": "input",
-                    "value": "T32VMR_20180710T105031_B04_10m"
+                    "value": "T32VNR_20180630T105031_B04_10m"
                 },
                 {
                     "param": "size",
@@ -312,7 +312,7 @@
                 },
                 {
                     "param": "input",
-                    "value": "haralick_texture_ASM,haralick_texture_Contr,haralick_texture_Corr,haralick_texture_Var,haralick_texture_IDM,haralick_texture_SA,haralick_texture_SV,haralick_texture_SE,haralick_texture_Entr,haralick_texture_DV,haralick_texture_DE,haralick_texture_MOC-1,haralick_texture_MOC-2,T32VMR_20180710T105031_B04_10m,T32VMR_20180710T105031_B08_10m,T32VMR_20180710T105031_B03_10m,T32VMR_20180710T105031_B02_10m,ndvi,ndwi,ndmi"
+                    "value": "haralick_texture_ASM,haralick_texture_Contr,haralick_texture_Corr,haralick_texture_Var,haralick_texture_IDM,haralick_texture_SA,haralick_texture_SV,haralick_texture_SE,haralick_texture_Entr,haralick_texture_DV,haralick_texture_DE,haralick_texture_MOC-1,haralick_texture_MOC-2,T32VNR_20180630T105031_B04_10m,T32VNR_20180630T105031_B08_10m,T32VNR_20180630T105031_B03_10m,T32VNR_20180630T105031_B02_10m,ndvi,ndwi,ndmi"
                 }
             ]
         },
@@ -341,30 +341,26 @@
                     "value": "RandomForestClassifier"
                 },
                 {
+                    "param": "rowincr",
+                    "value": "25"
+                }
+                ],
+            "outputs":[
+                {
                     "param": "save_model",
                     "value": "/actinia_core/nird/data/projects/FALK/Hovedoekosystemer_FALK/model.gz"
                 },
                 {
                     "param": "errors_file",
-                    "value": "/actinia_core/nird/data/projects/FALK/Hovedoekosystemer_FALK/errors.csv"
+                    "value": "/actinia_core/nird/rf_errors.csv"
                 },
                 {
                     "param": "preds_file",
-                    "value": "/actinia_core/nird/data/projects/FALK/Hovedoekosystemer_FALK/predictions.csv"
+                    "value": "/actinia_core/nird/data/rf_predictions.csv"
                 },
                 {
                     "param": "fimp_file",
-                    "value": "/actinia_core/nird/data/projects/FALK/Hovedoekosystemer_FALK/feature_importance.csv"
-                }
-            ]
-        },
-        {
-            "id": "mask_FKB_AR5",
-            "module": "r.mapcalc",
-            "inputs": [
-                {
-                    "param": "expression",
-                    "value": "'classification_map_all_FKB_AR5=if(FKB_AR5_mask, 0, classification_map)'"
+                    "value": "/actinia_core/nird/data/projects/FALK/rf_feature_importance.csv"
                 }
             ]
         },
@@ -460,62 +456,62 @@
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B01_10m"
+                    "value": "T32VNR_20180630T105031_B01_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B02_10m"
+                    "value": "T32VNR_20180630T105031_B02_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B03_10m"
+                    "value": "T32VNR_20180630T105031_B03_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B05_10m"
+                    "value": "T32VNR_20180630T105031_B05_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B04_10m"
+                    "value": "T32VNR_20180630T105031_B04_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B06_10m"
+                    "value": "T32VNR_20180630T105031_B06_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B07_10m"
+                    "value": "T32VNR_20180630T105031_B07_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B08_10m"
+                    "value": "T32VNR_20180630T105031_B08_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B09_10m"
+                    "value": "T32VNR_20180630T105031_B09_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B11_10m"
+                    "value": "T32VNR_20180630T105031_B11_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B12_10m"
+                    "value": "T32VNR_20180630T105031_B12_10m"
                 },
                 {
                     "export": {"type": "raster", "format": "GTiff"},
                     "param": "map",
-                    "value": "T32VMR_20180710T105031_B8A_10m"
+                    "value": "T32VNR_20180630T105031_B8A_10m"
                 }
             ]
         }
